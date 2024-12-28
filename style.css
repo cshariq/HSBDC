@@ -1,0 +1,103 @@
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+#map {
+    height: 100%;
+    width: 100%;
+}
+/* Custom styles for zoom controls */
+.custom-zoom {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    padding: 10px;
+    background: white;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+.custom-zoom button {
+    width: 30px;
+    display: block;
+    margin: 5px 0;
+    height: 30px;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+    border-radius: 3px;
+}
+/* Style for the search box */
+#search-box {
+    top: 10px;
+    left: 10px;
+    width: 440px;
+    border: none;
+    height: 19px;
+    outline: none;
+    padding: 15px;
+    font-size: 15px;
+    color: white;
+    position: absolute;
+    border-radius: 40px;
+    backdrop-filter: blur(50px);
+    background: rgba(0, 0, 0, 0.25);
+    font-family: "Comfortaa", sans-serif;
+    transition: all 0.3s ease-in-out;
+}
+#search-box::placeholder {
+    color: #D3D3D3;
+    font-family: "Comfortaa", sans-serif;
+}
+#search-box:hover {
+    top: 12px;
+}
+#search-box:focus {
+    top: 12px;
+}
+.pac-container {
+    backdrop-filter: blur(50px);
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    font-family: "Comfortaa", sans-serif;
+    margin-top: 5px;
+    padding: 10px;
+    border: none;
+    outline: none;
+}
+
+.pac-item {
+    transition: all 0.3s ease-in-out;
+    backdrop-filter: blur(20px);
+    background: rgba(0, 0, 0, 0.076);
+    border-radius: 15px;
+    font-family: "Comfortaa", sans-serif;
+    margin-top: 5px;
+    padding: 7px;
+    border: none;
+    outline: none;
+    color: rgb(202, 202, 202)
+}
+
+.pac-item:hover {
+    margin-top:5px;
+    backdrop-filter: blur(20px);
+    background: rgba(0, 0, 0, 0.541);
+    border-radius: 15px;
+    font-family: "Comfortaa", sans-serif;
+    margin-top: 5px;
+    padding: 10px;
+    border: none;
+    outline: none;
+}
+
+.pac-container:after {
+    background-image: none !important;
+    height: 0px;
+}
+
+.pac-item-query {
+    color: white;
+}
