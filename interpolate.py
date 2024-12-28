@@ -32,7 +32,7 @@ for i in df.index:
             if empty_year < pair[1]["year"]:
                 f = interp1d([pair[0]["year"], pair[1]["year"]], [pair[0]["value"], pair[1]["value"]], fill_value="extrapolate")
                 break
-        
-        df.at[i, str(empty_year)] = f(empty_year)
+
+        df.at[i, str(empty_year)] = f(empty_year) if f(empty_year) > 0 else 0
 
 df.to_csv("interp_dataset.csv")
