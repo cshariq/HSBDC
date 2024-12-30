@@ -1,81 +1,109 @@
-var markers = [];
+// var slider = document.getElementById("myRange");
+// var output = document.getElementById("demo");
+// output.innerHTML = slider.value;
 
-function initMap() {
-  // Create the map
-  var map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 0, lng: 0},
-    zoom: 2,
-    minZoom: 2,
-    maxZoom: 10,
-    mapTypeControl: false,
-    streetViewControl: false,
-    fullscreenControl: false,
-    zoomControl: false,
-    gestureHandling: 'cooperative',
-    restriction: {
-      latLngBounds: {
-        north: 85,
-        south: -85,
-        west: -180,
-        east: 180
-      },
-      strictBounds: true
+// slider.oninput = function() {
+//   output.innerHTML = this.value;
+// }
+document.addEventListener('DOMContentLoaded', () => {
+    const slider = document.getElementById('myRange');
+    const text = document.getElementById('slider-text-1960');
+    const totalSections = 90; // Total number of sections (1% increments)
+    const barWidth = 1; // Width of the small bars
+    const largeBarWidth = 1.5; // Width of the large bars
+
+    function updateBars() {
+        const sliderWidth = slider.offsetWidth; // Get the width of the slider
+        const textWidth = text.offsetWidth;
+        const bars = document.querySelectorAll('.small-bar, .large-bar');
+        bars.forEach(bar => bar.remove()); // Remove existing bars
+
+        for (let i = 0; i <= totalSections; i++) {
+            const bar = document.createElement('div');
+            if (i % 5 === 0) {
+                bar.className = 'large-bar';
+                bar.style.width = `${largeBarWidth}px`;
+            } else {
+                bar.className = 'small-bar';
+                bar.style.width = `${barWidth}px`;
+            }
+            const position = `calc(${i} * ${sliderWidth / 90}px)`;
+            bar.style.left = `calc(${position} + ${textWidth + 26}px)`;
+            slider.parentElement.appendChild(bar);
+        }
     }
-  });
+    window.addEventListener('resize', function(event) {
+        const slider = document.getElementById('myRange');
+        const text = document.getElementById('slider-text-1960');
+        const totalSections = 90; // Total number of sections (1% increments)
+        const barWidth = 1; // Width of the small bars
+        const largeBarWidth = 1.5; // Width of the large bars
+    
+        function updateBars() {
+            const sliderWidth = slider.offsetWidth; // Get the width of the slider
+            const textWidth = text.offsetWidth;
+            const bars = document.querySelectorAll('.small-bar, .large-bar');
+            bars.forEach(bar => bar.remove()); // Remove existing bars
+    
+            for (let i = 0; i <= totalSections; i++) {
+                const bar = document.createElement('div');
+                if (i % 5 === 0) {
+                    bar.className = 'large-bar';
+                    bar.style.width = `${largeBarWidth}px`;
+                } else {
+                    bar.className = 'small-bar';
+                    bar.style.width = `${barWidth}px`;
+                }
+                const position = `calc(${i} * ${sliderWidth / 90}px)`;
+                bar.style.left = `calc(${position} + ${textWidth + 26}px)`;
+                slider.parentElement.appendChild(bar);
+            }
+        }
+        requestAnimationFrame(updateBar());
+    }, true);
+    updateBars(); // Initial call to set up bars
+});
 
-  // Create the search box and link it to the UI element
-  var input = document.getElementById('search-box');
-  var searchBox = new google.maps.places.SearchBox(input);
+window.addEventListener('resize', function(event) {
+    const slider = document.getElementById('myRange');
+    const text = document.getElementById('slider-text-1960');
+    const totalSections = 90; // Total number of sections (1% increments)
+    const barWidth = 1; // Width of the small bars
+    const largeBarWidth = 1.5; // Width of the large bars
+    
+    function updateBars() {
+        console.log("l")
+        const sliderWidth = slider.offsetWidth; // Get the width of the slider
+        const textWidth = text.offsetWidth;
+        const bars = document.querySelectorAll('.small-bar, .large-bar');
+        bars.forEach(bar => bar.remove()); // Remove existing bars
 
-  // Bias the SearchBox results towards current map's viewport
-  map.addListener('bounds_changed', function() {
-    searchBox.setBounds(map.getBounds());
-  });
-
-  // Listen for the event fired when the user selects a prediction and retrieve more details for that place
-  searchBox.addListener('places_changed', function() {
-    var places = searchBox.getPlaces();
-
-    if (places.length == 0) {
-      return;
+        for (let i = 0; i <= totalSections; i++) {
+            const bar = document.createElement('div');
+            if (i % 5 === 0) {
+                bar.className = 'large-bar';
+                bar.style.width = `${largeBarWidth}px`;
+            } else {
+                bar.className = 'small-bar';
+                bar.style.width = `${barWidth}px`;
+            }
+            const position = `calc(${i} * ${sliderWidth / 90}px)`;
+            bar.style.left = `calc(${position} + ${textWidth + 26}px)`;
+            slider.parentElement.appendChild(bar);
+        }
     }
+    updateBars(); // Initial call to set up bars
+}, true);
 
-    // Clear out the old markers
-    markers.forEach(function(marker) {
-      marker.setMap(null);
+document.querySelectorAll('.graph-options option').forEach(option => {
+    option.addEventListener('click', function() {
+        document.querySelectorAll('.graph-options option').forEach(opt => {
+            opt.removeAttribute('selected');
+        });
+        this.setAttribute('selected', 'selected');
+        this.style.transform = 'translateX(50px)'; // Change the position
+        setTimeout(() => {
+            this.style.transform = 'translateX(0)';
+        }, 500); // Animate back to original position
     });
-    markers = [];
-
-    // For each place, get the icon, name, and location
-    var bounds = new google.maps.LatLngBounds();
-    places.forEach(function(place) {
-      if (!place.geometry) {
-        console.log("Returned place contains no geometry");
-        return;
-      }
-      var icon = {
-        url: place.icon,
-        size: new google.maps.Size(71, 71),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17, 34),
-        scaledSize: new google.maps.Size(25, 25)
-      };
-
-      // Create a marker for each place
-      markers.push(new google.maps.Marker({
-        map: map,
-        icon: icon,
-        title: place.name,
-        position: place.geometry.location
-      }));
-
-      if (place.geometry.viewport) {
-        // Only geocodes have viewport
-        bounds.union(place.geometry.viewport);
-      } else {
-        bounds.extend(place.geometry.location);
-      }
-    });
-    map.fitBounds(bounds);
-  });
-}
+});
