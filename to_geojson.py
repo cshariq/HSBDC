@@ -43,7 +43,7 @@ def fetch_place_id(country_name):
 
 def fetch_polygon_coordinates(coordinates):
     # url = f"https://api.geoapify.com/v1/boundaries/consists-of?id={place_id}&geometry=geometry_10000&apiKey=3af7a5add6dd4321818e21e99a2d79b8"
-    url = f"https://atlas.microsoft.com/search/polygon?api-version=2023-06-01&coordinates={coordinates}&resolution=huge&resultType=countryRegion&subscription-key=EQpqoU4nfyGucnQAjt0dKQzmGNIPR8zxReUehq0y4rwwQBGXsWYTJQQJ99ALACYeBjFPL6uYAAAgAZMP1SlG" 
+    url = f"https://atlas.microsoft.com/search/polygon?api-version=2023-06-01&coordinates={coordinates}&resultType=countryRegion&subscription-key=EQpqoU4nfyGucnQAjt0dKQzmGNIPR8zxReUehq0y4rwwQBGXsWYTJQQJ99ALACYeBjFPL6uYAAAgAZMP1SlG" 
     headers = { 
         "Accept": "application/json" 
     }
