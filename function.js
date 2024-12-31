@@ -107,3 +107,14 @@ document.querySelectorAll('.graph-options option').forEach(option => {
         }, 500); // Animate back to original position
     });
 });
+
+document.getElementById("search-box").addEventListener("input", function() {
+    this.value = '';
+    this.select();
+});
+
+// document.getElementById('search-box').addEventListener('keydown', function(event) { 
+//     if (event.key === 'Enter') { 
+//         this.value = ''; // 
+//         this.blur(); // Remove focus from the text box 
+// } });

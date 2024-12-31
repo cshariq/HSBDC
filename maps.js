@@ -118,6 +118,14 @@ function initMap() {
             })
             .catch(error => console.error('Error loading GeoJSON:', error));
     }
+
+    // Zoom Control Event Listeners
+    document.getElementById('zoom-in').addEventListener('click', function() {
+        map.setZoom(map.getZoom() + 1);
+    });
+    document.getElementById('zoom-out').addEventListener('click', function() {
+        map.setZoom(map.getZoom() - 1);
+    });
 }
 
 // Function to determine color based on weight

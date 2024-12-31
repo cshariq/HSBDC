@@ -63,11 +63,26 @@ body {
 }
 
 #search-box:hover {
-    top: 12px;
+    top: 13px;
 }
 
 #search-box:focus {
-    top: 12px;
+    background: rgba(0, 0, 0, 0.38);
+    animation: select 0.5s 1;
+}
+
+@keyframes select {
+    0% {
+        scale: 100%;
+    }
+
+    50% {
+        scale: 99.6%;
+    }
+
+    100% {
+        scale: 100%;
+    }
 }
 
 .pac-container {
@@ -245,10 +260,11 @@ body {
     align-items: center;
     justify-content: center;
 }
-.graph-options option[selected] { 
-    background-color: #ffffffc8; 
-    color: #000000; 
-    font-weight: bold; 
+
+.graph-options option[selected] {
+    background-color: #ffffffc8;
+    color: #000000;
+    font-weight: bold;
 }
 
 .graph-options option:hover {

@@ -47,6 +47,8 @@ def fetch_polygon_coordinates(coordinates):
     headers = { 
         "Accept": "application/json" 
     }
+    def round_coordinates(coords, decimals=5): 
+        return [[round(coord, decimals) for coord in pair] for pair in coords]
     try:
         response = requests.get(url, headers=headers)
         for attempt in range(30):
@@ -58,7 +60,8 @@ def fetch_polygon_coordinates(coordinates):
                     for i, geometry in enumerate(geometries):
                         if len(geometries[i]["coordinates"])>0:
                             # print(str(i)+"c")
-                            polygon = Polygon(geometries[i]["coordinates"][0])
+                            rounded_coords = round_coordinates(geometries[i]["coordinates"][0])
+                            polygon = Polygon(rounded_coords)
                             polygons.append(polygon)
                         else:
                             print("Polygon not found skipping...")
@@ -128,21 +131,24 @@ for index in range(63):
                         print(f"Could not fetch polygon coordinates for country: {row['Country Name']}")
                         continue
                     else:
-                        feature = {
-                            "type": "Feature",
-                            "properties": {
-                                "name": row["Country Name"],
-                                "weight": float(row[str(1960+index)])
-                            },
-                            "id": country_code,
-                            "geometry": mapping(polygons)
-                        }
-                        geojson["features"].append(feature)
-                        geojson_str = json.dumps(geojson, indent=2)
-                        output_file_path = (f'data/data{index}/geojson_file{current_row}.geojson')
-                        with open(output_file_path, 'w') as file:
-                            file.write(geojson_str)
-                        print(f"Saved")
+                        try:
+                            feature = {
+                                "type": "Feature",
+                                "properties": {
+                                    "name": row["Country Name"],
+                                    "weight": float(row[str(1960+index)])
+                                },
+                                "id": country_code,
+                                "geometry": mapping(polygons)
+                            }
+                            geojson["features"].append(feature)
+                            geojson_str = json.dumps(geojson, indent=2)
+                            output_file_path = (f'data/data{index}/geojson_file{current_row}.geojson')
+                            with open(output_file_path, 'w') as file:
+                                file.write(geojson_str)
+                            print(f"Saved")
+                        except:
+                            print(f"Invalid geometry, skiped country {country_name}")
                 except ValueError:
                     print(f"Could not convert weight to float for country: {row['Country Name']}")
             else:
