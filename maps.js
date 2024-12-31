@@ -1,6 +1,48 @@
 var markers = [];
 let map;
 let data = {};
+const BATCH_SIZE = 50; // Adjust based on your needs
+let cache = {};
+
+function loadGeoJsonBatch(batchStart, batchEnd) {
+    const promises = [];
+    for (let i = batchStart; i <= batchEnd; i++) {
+        let url = `data/data0/geojson_file${i}.geojson`;
+        promises.push(
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`GeoJSON file not found: ${url}`);
+                    }
+                    return response.json();
+                })
+                .then(geoJsonData => {
+                    cache[url] = geoJsonData;
+                    map.data.addGeoJson(geoJsonData);
+                })
+                .catch(error => console.error('Error loading GeoJSON:', error))
+        );
+    }
+    return Promise.all(promises);
+}
+
+async function loadAllGeoJsonData() {
+    for (let i = 0; i <= 322; i += BATCH_SIZE) {
+        await loadGeoJsonBatch(i, Math.min(i + BATCH_SIZE - 1, 322));
+    }
+
+    // Set the style for the GeoJSON data
+    map.data.setStyle(function(feature) {
+        const weight = feature.getProperty('weight');
+        const color = getColor(weight);
+        return {
+            fillColor: color,
+            fillOpacity: 0.6,
+            strokeColor: '#000000',
+            strokeWeight: 1
+        };
+    });
+}
 
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -67,57 +109,33 @@ function initMap() {
             } else {
                 bounds.extend(place.geometry.location);
             }
+
             document.getElementById('info').style.display = "block";
-            place.address_components.forEach(function(component) { 
-                if (component.types.includes("country")) { 
+            place.address_components.forEach(function(component) {
+                if (component.types.includes("country")) {
                     document.getElementById('country').innerHTML = `<strong>Country:</strong> ${component.long_name}`;
                     const url = `https://api.api-ninjas.com/v1/country?name=${component.long_name}&X-Api-Key=1KDhTK3ghZ2spNV39PaKgQ==Q1nAqEU4RWq1twez`;
                     fetch(url)
                         .then(response => response.json())
                         .then(data => {
-                        var population = data[0].population || 'N/A';
-                        var popGrowth = data[0].pop_growth || 'N/A';
-                        document.getElementById('popGrowth').innerHTML = `<strong>Population Growth:</strong> ${popGrowth}%`;
-                        population = population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ", ");
-                        document.getElementById('population').innerHTML = `<strong>Population:</strong> ${population} Million`;
-                        var secondary_female = data[0].secondary_school_enrollment_female || 'N/A';
-                        var secondary_male = data[0].secondary_school_enrollment_male || 'N/A';
-                        let secondary = (secondary_female + secondary_male) / 2;
-                        document.getElementById('enrollment').innerHTML = `<strong>HS Enrollment Rate:</strong> ${secondary}%`;
-                    })
-                    .catch(error => console.error(error));
-                } 
+                            var population = data[0].population || 'N/A';
+                            var popGrowth = data[0].pop_growth || 'N/A';
+                            document.getElementById('popGrowth').innerHTML = `<strong>Population Growth:</strong> ${popGrowth}%`;
+                            population = population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ", ");
+                            document.getElementById('population').innerHTML = `<strong>Population:</strong> ${population} Million`;
+                            var secondary_female = data[0].secondary_school_enrollment_female || 'N/A';
+                            var secondary_male = data[0].secondary_school_enrollment_male || 'N/A';
+                            let secondary = (secondary_female + secondary_male) / 2;
+                            document.getElementById('enrollment').innerHTML = `<strong>HS Enrollment Rate:</strong> ${secondary}%`;
+                        })
+                        .catch(error => console.error(error));
+                }
             });
         });
         map.fitBounds(bounds);
     });
 
-    for (let i = 0; i <= 322; i++) {
-        let url = `data/data0/geojson_file${i}.geojson`;
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`GeoJSON file not found: ${url}`);
-                }
-                return response.json();
-            })
-            .then(geoJsonData => {
-                map.data.addGeoJson(geoJsonData);
-
-                // Set the style for the GeoJSON data
-                map.data.setStyle(function(feature) {
-                    const weight = feature.getProperty('weight');
-                    const color = getColor(weight);
-                    return {
-                        fillColor: color,
-                        fillOpacity: 0.6,
-                        strokeColor: '#000000',
-                        strokeWeight: 1
-                    };
-                });
-            })
-            .catch(error => console.error('Error loading GeoJSON:', error));
-    }
+    loadAllGeoJsonData();
 
     // Zoom Control Event Listeners
     document.getElementById('zoom-in').addEventListener('click', function() {
