@@ -92,32 +92,7 @@ function initMap() {
         map.fitBounds(bounds);
     });
 
-    for (let i = 0; i <= 322; i++) {
-        let url = `data/data0/geojson_file${i}.geojson`;
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`GeoJSON file not found: ${url}`);
-                }
-                return response.json();
-            })
-            .then(geoJsonData => {
-                map.data.addGeoJson(geoJsonData);
-
-                // Set the style for the GeoJSON data
-                map.data.setStyle(function(feature) {
-                    const weight = feature.getProperty('weight');
-                    const color = getColor(weight);
-                    return {
-                        fillColor: color,
-                        fillOpacity: 0.6,
-                        strokeColor: '#000000',
-                        strokeWeight: 1
-                    };
-                });
-            })
-            .catch(error => console.error('Error loading GeoJSON:', error));
-    }
+    loadGeoJsonFiles();
 
     // Zoom Control Event Listeners
     document.getElementById('zoom-in').addEventListener('click', function() {
@@ -125,6 +100,46 @@ function initMap() {
     });
     document.getElementById('zoom-out').addEventListener('click', function() {
         map.setZoom(map.getZoom() - 1);
+    });
+}
+
+async function loadGeoJsonFiles(batchSize = 20) {
+    const urls = [];
+    for (let i = 0; i <= 322; i++) {
+        urls.push(`data/data0/geojson_file${i}.geojson`);
+    }
+
+    for (let i = 0; i < urls.length; i += batchSize) {
+        const batch = urls.slice(i, i + batchSize);
+        const fetchPromises = batch.map(url => 
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`GeoJSON file not found: ${url}`);
+                    }
+                    return response.json();
+                })
+                .catch(error => console.error('Error loading GeoJSON:', error))
+        );
+
+        const geoJsonDataArray = await Promise.all(fetchPromises);
+        geoJsonDataArray.forEach(geoJsonData => {
+            if (geoJsonData) {
+                map.data.addGeoJson(geoJsonData);
+            }
+        });
+    }
+
+    // Set the style for the GeoJSON data once all files are loaded
+    map.data.setStyle(function(feature) {
+        const weight = feature.getProperty('weight');
+        const color = getColor(weight);
+        return {
+            fillColor: color,
+            fillOpacity: 0.6,
+            strokeColor: '#000000',
+            strokeWeight: 1
+        };
     });
 }
 
