@@ -113,6 +113,12 @@ document.getElementById("search-box").addEventListener("input", function() {
     this.select();
 });
 
+function myFunction() {
+    var element = document.body;
+    element.classList.toggle("dark-modes");
+    // document.body.classList.toggle("dark-modes");
+}
+
 // document.getElementById('search-box').addEventListener('keydown', function(event) { 
 //     if (event.key === 'Enter') { 
 //         this.value = ''; // 

@@ -43,12 +43,21 @@ def fetch_place_id(country_name):
 
 def fetch_polygon_coordinates(coordinates):
     # url = f"https://api.geoapify.com/v1/boundaries/consists-of?id={place_id}&geometry=geometry_10000&apiKey=3af7a5add6dd4321818e21e99a2d79b8"
-    url = f"https://atlas.microsoft.com/search/polygon?api-version=2023-06-01&coordinates={coordinates}&resolution=small&resultType=countryRegion&subscription-key=EQpqoU4nfyGucnQAjt0dKQzmGNIPR8zxReUehq0y4rwwQBGXsWYTJQQJ99ALACYeBjFPL6uYAAAgAZMP1SlG" 
+    url = f"https://atlas.microsoft.com/search/polygon?api-version=2023-06-01&coordinates={coordinates}&resolution=huge&resultType=countryRegion&subscription-key=EQpqoU4nfyGucnQAjt0dKQzmGNIPR8zxReUehq0y4rwwQBGXsWYTJQQJ99ALACYeBjFPL6uYAAAgAZMP1SlG" 
     headers = { 
         "Accept": "application/json" 
     }
-    def round_coordinates(coords, decimals=5): 
+    def round_coordinates(coords, decimals=3): 
         return [[round(coord, decimals) for coord in pair] for pair in coords]
+    def clean_data(array): #not working
+        corrected_array = []
+        for item in array:
+            if isinstance(item[0], list) and not isinstance(item[0][0], list):
+                corrected_array.append(item)
+            elif isinstance(item[0][0], list):
+                for sub_item in item:
+                    corrected_array.append(sub_item)
+        return corrected_array
     try:
         response = requests.get(url, headers=headers)
         for attempt in range(30):
@@ -68,11 +77,13 @@ def fetch_polygon_coordinates(coordinates):
                     # valid_polygons = [poly for poly in polygons if poly.is_valid]
                     try:
                         merged_polygon = unary_union(polygons)
+                        # merged_polygon = clean_data(merged_polygon)
                     except Exception as e:
                         print("Perhaps their were invalid polygons: ")
                         print(e)
                         valid_polygons = [poly for poly in polygons if poly.is_valid]
                         merged_polygon = unary_union(valid_polygons)
+                        # merged_polygon = clean_data(merged_polygon)
                     # merged_polygon_dict = shapely.geometry.mapping(merged_polygon)
                     # gdf = gpd.GeoDataFrame(merged_polygon_dict)
                     # gdf_json = gdf.to_json()
@@ -106,6 +117,7 @@ for index in range(63):
     output_dir = f'data/data{index}' 
     os.makedirs(output_dir, exist_ok=True)
     if index == 0:
+        processed_coords = set()
         for current_row, row in enumerate(data):
             geojson = {
             "type": "FeatureCollection",
@@ -123,7 +135,7 @@ for index in range(63):
                 print(f"Skipped country: {row['Country Name']}")
                 continue
             coordinates = fetch_place_id(country_name)
-            if coordinates:
+            if coordinates and not coordinates in processed_coords:
                 polygons = fetch_polygon_coordinates(coordinates)
                 try:
                     weight = float(row[str(1960+index)])
@@ -144,6 +156,7 @@ for index in range(63):
                             geojson["features"].append(feature)
                             geojson_str = json.dumps(geojson, indent=2)
                             output_file_path = (f'data/data{index}/geojson_file{current_row}.geojson')
+                            processed_coords.add(coordinates)
                             with open(output_file_path, 'w') as file:
                                 file.write(geojson_str)
                             print(f"Saved")
@@ -154,49 +167,49 @@ for index in range(63):
             else:
                 print(f"Could not fetch place_id for country code: {country_name}")
         # geojson_data = load_geojson("data/geojson_file0.geojson")
-    else:
-        # 
-        for current_row, row in enumerate(data):
-            geojson = {
-                "type": "FeatureCollection",
-                "features": []
-            }
-            directory = os.fsencode("data/data0")
-            done = False
-            for file in os.listdir(directory):
-                filename = os.fsdecode(file)
-                if filename.endswith(".geojson") and filename == f"geojson_file{current_row}.geojson": 
-                    # print(os.path.join(directory, filename))
-                    geojson_data = load_geojson(f"data/data0/{filename}")
-                    # try:
-                    print(str(current_row)+"b")
-                    features = geojson_data['features'][0]
-                    if features['properties']['name'] == row['Country Name']:
-                        # try:
-                        print(f"Country found: {row['Country Name']}")
-                        feature = {
-                            "type": "Feature",
-                            "properties": {
-                                "name": row["Country Name"],
-                                "weight": float(row[str(1960+index)])
-                            },
-                            "id": row["Country Code_y"] if row["Country Code_y"] else row["Country Code_x"],
-                            "geometry": {
-                                "type": "Polygon",
-                                "coordinates": features['geometry']['coordinates']
-                            }
-                        }
-                        geojson["features"].append(feature)
-                        geojson_str = json.dumps(geojson, indent=2)
-                        output_file_path = (f'data/data{index}/geojson_file{current_row}.geojson')
-                        with open(output_file_path, 'w') as file:
-                            file.write(geojson_str)
-                        print(f"Saved")
-                        done = True
-                        break
-                            # except:
-                            #     print(f"Could not convert weight to float for country: {row['Country Name']}")
-                    # except:
-                    #     print(f"Could not convert weight to float for country: {row['Country Name']}")
-            if not done:
-                print(f"Country not found: {row['Country Name']}")
+    # else:
+    #     # 
+    #     for current_row, row in enumerate(data):
+    #         geojson = {
+    #             "type": "FeatureCollection",
+    #             "features": []
+    #         }
+    #         directory = os.fsencode("data/data0")
+    #         done = False
+    #         for file in os.listdir(directory):
+    #             filename = os.fsdecode(file)
+    #             if filename.endswith(".geojson") and filename == f"geojson_file{current_row}.geojson": 
+    #                 # print(os.path.join(directory, filename))
+    #                 geojson_data = load_geojson(f"data/data0/{filename}")
+    #                 # try:
+    #                 print(str(current_row)+"b")
+    #                 features = geojson_data['features'][0]
+    #                 if features['properties']['name'] == row['Country Name']:
+    #                     # try:
+    #                     print(f"Country found: {row['Country Name']}")
+    #                     feature = {
+    #                         "type": "Feature",
+    #                         "properties": {
+    #                             "name": row["Country Name"],
+    #                             "weight": float(row[str(1960+index)])
+    #                         },
+    #                         "id": row["Country Code_y"] if row["Country Code_y"] else row["Country Code_x"],
+    #                         "geometry": {
+    #                             "type": "Polygon",
+    #                             "coordinates": features['geometry']['coordinates']
+    #                         }
+    #                     }
+    #                     geojson["features"].append(feature)
+    #                     geojson_str = json.dumps(geojson, indent=2)
+    #                     output_file_path = (f'data/data{index}/geojson_file{current_row}.geojson')
+    #                     with open(output_file_path, 'w') as file:
+    #                         file.write(geojson_str)
+    #                     print(f"Saved")
+    #                     done = True
+    #                     break
+    #                         # except:
+    #                         #     print(f"Could not convert weight to float for country: {row['Country Name']}")
+    #                 # except:
+    #                 #     print(f"Could not convert weight to float for country: {row['Country Name']}")
+    #         if not done:
+    #             print(f"Country not found: {row['Country Name']}")

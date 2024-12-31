@@ -3,6 +3,7 @@
 
 <head>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="themeSliderStyle.css">
   <script src="maps.js"></script>
   <script src="function.js"></script>
   <title>HSBDC</title>
@@ -52,9 +53,15 @@
     <button id="zoom-in" class="material-symbols-outlined">add</button>
     <button id="zoom-out" class="material-symbols-outlined">remove</button>
   </div>
+  <div class ='toggle-switch' onclick="myFunction()">
+    <label class="label-1" onclick="myFunction()">
+        <input id="dark-slider" class="input-1" type = 'checkbox' >
+        <div class = 'slider' onclick="myFunction()"></div>
+    </label>
+  </div>
   <div class="timeline">
     <span class="slider-text" id="slider-text-1960">1960</span>
-    <input type="range" min="1960" max="2050" value="50" class="slider" id="myRange">
+    <input type="range" min="1960" max="2050" value="50" class="timeline-slider" id="myRange">
     <span class="slider-text">2050</span>
   </div>
 </body>
