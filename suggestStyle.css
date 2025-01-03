@@ -86,7 +86,7 @@ body {
 }
 
 .container {
-    display: none;
+    display: flex;
     height: calc(100vh - 195px);
     padding: 10px;
     margin-bottom: 0px !important;
@@ -449,7 +449,7 @@ body {
     }
 }
 
-@media (max-width: 1300px) {
+@media (max-width: 800px) {
     .container {
         flex-direction: column;
         /* Stack elements vertically */
