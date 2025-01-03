@@ -1,3 +1,30 @@
+var resizeId;
+$(window).resize(function() {
+    clearTimeout(resizeId);
+    resizeId = setTimeout(doneResizing, 500);
+});
+
+function doneResizing() {
+    const sliderWidth = slider.offsetWidth;
+    const textWidth = text.offsetWidth;
+    const bars = document.querySelectorAll('.small-bar, .large-bar');
+    bars.forEach(bar => bar.remove());
+
+    for (let i = 0; i <= totalSections; i++) {
+        const bar = document.createElement('div');
+        if (i % 5 === 0) {
+            bar.className = 'large-bar';
+            bar.style.width = `${largeBarWidth}px`;
+        } else {
+            bar.className = 'small-bar';
+            bar.style.width = `${barWidth}px`;
+        }
+        const position = `calc(${i} * ${sliderWidth / 90}px)`;
+        bar.style.left = `calc(${position} + ${textWidth + 26}px)`;
+        slider.parentElement.appendChild(bar);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const slider = document.getElementById('myRange');
     const text = document.getElementById('slider-text-1960');

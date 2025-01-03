@@ -55,6 +55,10 @@ body {
     font-weight: bold;
 }
 
+#boxes {
+    display: none;
+}
+
 .dropbox {
     flex: 3;
     /* 75% width */

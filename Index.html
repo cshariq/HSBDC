@@ -28,16 +28,16 @@
     <h1 class="ml17">Over 84% of our energy comes from fossil fuels</h1>
   </div>
   <div class="container" id="schools">
-      <!-- <div class="dropbox" id="dropbox">
-          <input type="file" id="fileElem" multiple accept=".csv" onchange="handleFiles(this.files)">
+      <div class="dropbox" id="dropbox">
+          <input type="file" id="fileElem" onchange="handleFiles(this.files)">
           <h1 class="large-prompt">Upload your electricity bill</h1>
           <div class="small-prompt" id="idea">and we’ll guide you to reduce your carbon footprint</div>
           <div class="small-prompt" id="idea">helping lessen the impacts of climate change on education</div>
           <div class="material-symbols-outlined" id="upload-icon">upload_file</div>
           <div class="small-prompt" id="explorer">search file or drag and drop</div>
           <div class="small-prompt" id="requirements">Must be in CSV format</div>
-      </div> -->
-      <div class="first-column">
+      </div>
+      <div class="first-column" id="boxes">
           <div class="box"> 
               <canvas id="electricity-consumption-chart"></canvas> 
           </div> 
@@ -51,7 +51,7 @@
               <canvas id="average-monthly-consumption-chart"></canvas> 
           </div>
       </div>
-      <div class="second-column">
+      <div class="second-column" id="boxes">
           <div class="box second-column-box"> 
               <canvas id="average-cost-per-unit-chart"></canvas> 
           </div> 
