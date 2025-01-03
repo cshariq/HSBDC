@@ -43,7 +43,7 @@ def fetch_place_id(country_name):
 
 def fetch_polygon_coordinates(coordinates):
     # url = f"https://api.geoapify.com/v1/boundaries/consists-of?id={place_id}&geometry=geometry_10000&apiKey=3af7a5add6dd4321818e21e99a2d79b8"
-    url = f"https://atlas.microsoft.com/search/polygon?api-version=2023-06-01&coordinates={coordinates}&resultType=countryRegion&subscription-key=EQpqoU4nfyGucnQAjt0dKQzmGNIPR8zxReUehq0y4rwwQBGXsWYTJQQJ99ALACYeBjFPL6uYAAAgAZMP1SlG" 
+    url = f"https://atlas.microsoft.com/search/polygon?api-version=2023-06-01&coordinates={coordinates}&resolution=small&resultType=countryRegion&subscription-key=EQpqoU4nfyGucnQAjt0dKQzmGNIPR8zxReUehq0y4rwwQBGXsWYTJQQJ99ALACYeBjFPL6uYAAAgAZMP1SlG" 
     headers = { 
         "Accept": "application/json" 
     }
@@ -96,6 +96,7 @@ def fetch_polygon_coordinates(coordinates):
                     #     with open(output_file_path, 'w') as file:
                     #         file.write(geojson_str)
                     if merged_polygon:
+                        merged_polygon = merged_polygon.simplify(tolerance=0.1, preserve_topology=True)
                         return merged_polygon
                 elif response.status_code in [429, 503]:
                     sleep(2 ** attempt)
@@ -117,7 +118,6 @@ for index in range(63):
     output_dir = f'data/data{index}' 
     os.makedirs(output_dir, exist_ok=True)
     if index == 0:
-        processed_coords = set()
         for current_row, row in enumerate(data):
             geojson = {
             "type": "FeatureCollection",
@@ -135,7 +135,7 @@ for index in range(63):
                 print(f"Skipped country: {row['Country Name']}")
                 continue
             coordinates = fetch_place_id(country_name)
-            if coordinates and not coordinates in processed_coords:
+            if coordinates:
                 polygons = fetch_polygon_coordinates(coordinates)
                 try:
                     weight = float(row[str(1960+index)])
@@ -156,11 +156,11 @@ for index in range(63):
                             geojson["features"].append(feature)
                             geojson_str = json.dumps(geojson, indent=2)
                             output_file_path = (f'data/data{index}/geojson_file{current_row}.geojson')
-                            processed_coords.add(coordinates)
                             with open(output_file_path, 'w') as file:
                                 file.write(geojson_str)
                             print(f"Saved")
-                        except:
+                        except Exception as e:
+                            print(e)
                             print(f"Invalid geometry, skiped country {country_name}")
                 except ValueError:
                     print(f"Could not convert weight to float for country: {row['Country Name']}")

@@ -1,6 +1,6 @@
 :root {
     --light: #ffffff;
-    --dark: rgba(0, 0, 0, 0.683);
+    --dark: rgb(0, 0, 0);
 }
 
 .toggle-switch {
@@ -11,7 +11,11 @@
     right: 20.5px;
 }
 
-@media (max-width: 1300px) {
+.hidden { 
+    display: none; 
+}
+
+@media (max-width: 700px) {
     .toggle-switch {
         display: none;
     }
