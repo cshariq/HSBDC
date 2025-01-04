@@ -3,7 +3,7 @@ $(window).resize(function() {
     clearTimeout(resizeId);
     resizeId = setTimeout(doneResizing, 500);
 });
-window.onload = function() { brython(); }
+
 function doneResizing() {
     const sliderWidth = slider.offsetWidth;
     const textWidth = text.offsetWidth;
@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             slider.parentElement.appendChild(bar);
         }
     }
+    brython()
     updateBars();
 });
 
