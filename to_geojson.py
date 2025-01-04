@@ -9,6 +9,22 @@ import geopandas as gpd
 import shapely
 from time import sleep
 import os
+import google.generativeai as genai
+genai.configure(api_key="AIzaSyAdJ1GLhQNBPz9Lp69TptrAJuHSQOuTleU")
+# Create the model
+generation_config = {
+  "temperature": 1,
+  "top_p": 0.95,
+  "top_k": 40,
+  "max_output_tokens": 8192,
+  "response_mime_type": "text/plain",
+}
+
+model = genai.GenerativeModel(
+  model_name="gemini-2.0-flash-exp",
+  generation_config=generation_config,
+  system_instruction="If the given text is a country or city return the city or country, if not(for e.g. a continent or demographic) return N/A",
+)
 
 csv_file_path = 'interp_dataset.csv'
 with open(csv_file_path, 'r') as file:
@@ -47,7 +63,7 @@ def fetch_polygon_coordinates(coordinates):
     headers = { 
         "Accept": "application/json" 
     }
-    def round_coordinates(coords, decimals=3): 
+    def round_coordinates(coords, decimals=5): 
         return [[round(coord, decimals) for coord in pair] for pair in coords]
     def clean_data(array): #not working
         corrected_array = []
@@ -119,6 +135,7 @@ for index in range(63):
     os.makedirs(output_dir, exist_ok=True)
     if index == 0:
         for current_row, row in enumerate(data):
+            
             geojson = {
             "type": "FeatureCollection",
             "features": []
@@ -134,6 +151,15 @@ for index in range(63):
             if not country_name:
                 print(f"Skipped country: {row['Country Name']}")
                 continue
+            # for attempt in range(30):
+            #     try:
+            #         chat_session = model.start_chat()
+            #         response = chat_session.send_message(country_name)
+            #         break
+            #     except Exception as e:
+            #         print("TIMEOUT")
+            #         sleep(2 ** attempt)
+            # if not response.text == "N/A":
             coordinates = fetch_place_id(country_name)
             if coordinates:
                 polygons = fetch_polygon_coordinates(coordinates)
@@ -166,6 +192,9 @@ for index in range(63):
                     print(f"Could not convert weight to float for country: {row['Country Name']}")
             else:
                 print(f"Could not fetch place_id for country code: {country_name}")
+            # else:
+            #     print("NOT A COUNTRY")
+            #     sleep(3)
         # geojson_data = load_geojson("data/geojson_file0.geojson")
     # else:
     #     # 

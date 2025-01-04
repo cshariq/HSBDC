@@ -1,37 +1,66 @@
-const {
-    GoogleGenerativeAI,
-    HarmCategory,
-    HarmBlockThreshold,
-} = require("@google/generative-ai");
+// const {
+//     GoogleGenerativeAI,
+//     HarmCategory,
+//     HarmBlockThreshold,
+// } = require("@google/generative-ai");
   
-const { GoogleAIFileManager } = require("@google/generative-ai/server");
+// const { GoogleAIFileManager } = require("@google/generative-ai/server");
 
-const apiKey = process.env.AIzaSyAdJ1GLhQNBPz9Lp69TptrAJuHSQOuTleU;
-const genAI = new GoogleGenerativeAI(apiKey);
-const fileManager = new GoogleAIFileManager(apiKey);
+// const apiKey = process.env.AIzaSyAdJ1GLhQNBPz9Lp69TptrAJuHSQOuTleU;
+// const genAI = new GoogleGenerativeAI(apiKey);
+// const fileManager = new GoogleAIFileManager(apiKey);
 
-async function uploadToGemini(path, mimeType) {
-    const uploadResult = await fileManager.uploadFile(path, {
-        mimeType,
-        displayName: path,
-    });
-    const file = uploadResult.file;
-    console.log(`Uploaded file ${file.displayName} as: ${file.name}`);
-    return file;
-}
+// async function uploadToGemini(path, mimeType) {
+//     const uploadResult = await fileManager.uploadFile(path, {
+//         mimeType,
+//         displayName: path,
+//     });
+//     const file = uploadResult.file;
+//     console.log(`Uploaded file ${file.displayName} as: ${file.name}`);
+//     return file;
+// }
 
-const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash-thinking-exp-1219",
-    systemInstruction: "Only provide statistics, in a clear manner based on the provided electricity bill(make sure to look at the electricity cost). I need total and average electricity used and total and average cost. Tell me about any anomalies in the month(if yearly dataset) and if monthly dataset provide me any anomalies in the weeks if possible. Along with the anomolies give me its respective month and the electricty used of that month. Lastly based on the location and bill provide 1 greener alternative only by its name(e.g. solar panels) that fits the location and consumption pattern and you best guess for next month's expected electricity usage. Don't show any of your calculations, answer should be in the following format with the correct units, and if you can't find a value it should be N/A:\nTotal electricty:\nAvergae electricty:\nTotal cost:\nAvergae cost:\nAnomolie month:\nAnomolies electricity usage:\nName of greener alternative:\nNext month electricty usage prediction:",
-});
+// const model = genAI.getGenerativeModel({
+//     model: "gemini-2.0-flash-thinking-exp-1219",
+//     systemInstruction: "Only provide statistics, in a clear manner based on the provided electricity bill(make sure to look at the electricity cost). I need total and average electricity used and total and average cost. Tell me about any anomalies in the month(if yearly dataset) and if monthly dataset provide me any anomalies in the weeks if possible. Along with the anomolies give me its respective month and the electricty used of that month. Lastly based on the location and bill provide 1 greener alternative only by its name(e.g. solar panels) that fits the location and consumption pattern and you best guess for next month's expected electricity usage. Don't show any of your calculations, answer should be in the following format with the correct units, and if you can't find a value it should be N/A:\nTotal electricty:\nAvergae electricty:\nTotal cost:\nAvergae cost:\nAnomolie month:\nAnomolies electricity usage:\nName of greener alternative:\nNext month electricty usage prediction:",
+// });
 
-const generationConfig = {
-    temperature: 1,
-    topP: 0.95,
-    topK: 64,
-    maxOutputTokens: 8192,
-    responseMimeType: "text/plain",
-};
+// const generationConfig = {
+//     temperature: 1,
+//     topP: 0.95,
+//     topK: 64,
+//     maxOutputTokens: 8192,
+//     responseMimeType: "text/plain",
+// };
+
+// require(['google-generative-ai', 'google-generative-ai-server'], function(GoogleGenerativeAI, GoogleAIFileManager) {
+//     const apiKey = process.env.AIzaSyAdJ1GLhQNBPz9Lp69TptrAJuHSQOuTleU;
+//     const genAI = new GoogleGenerativeAI(apiKey);
+//     const fileManager = new GoogleAIFileManager(apiKey);
+
+//     async function uploadToGemini(path, mimeType) {
+//         const uploadResult = await fileManager.uploadFile(path, {
+//             mimeType,
+//             displayName: path,
+//         });
+//         const file = uploadResult.file;
+//         console.log(`Uploaded file ${file.displayName} as: ${file.name}`);
+//         return file;
+//     }
+
+//     const model = genAI.getGenerativeModel({
+//         model: "gemini-2.0-flash-thinking-exp-1219",
+//         systemInstruction: "Only provide statistics, in a clear manner based on the provided electricity bill(make sure to look at the electricity cost). I need total and average electricity used and total and average cost. Tell me about any anomalies in the month(if yearly dataset) and if monthly dataset provide me any anomalies in the weeks if possible. Along with the anomolies give me its respective month and the electricty used of that month. Lastly based on the location and bill provide 1 greener alternative only by its name(e.g. solar panels) that fits the location and consumption pattern and you best guess for next month's expected electricity usage. Don't show any of your calculations, answer should be in the following format with the correct units, and if you can't find a value it should be N/A:\nTotal electricty:\nAvergae electricty:\nTotal cost:\nAvergae cost:\nAnomolie month:\nAnomolies electricity usage:\nName of greener alternative:\nNext month electricty usage prediction:",
+//     });
+
+//     const generationConfig = {
+//         temperature: 1,
+//         topP: 0.95,
+//         topK: 64,
+//         maxOutputTokens: 8192,
+//         responseMimeType: "text/plain",
+//     };
+// });
 
 $(document).ready(function () {
     // Wrap every word in a span
@@ -142,14 +171,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 function handleFiles(files) {
-    const yearlyData = {};
-    const upload = [
-        uploadToGemini("Electricity bill", files),
-    ];
-    const chatSession = model.startChat({generationConfig});
-    const result = chatSession.sendMessage("");
-    console.log(result.response.text()); 
+    jv_funcs.openfile(files, "Canada");
+    // const yearlyData = {};
+    // const upload = [
+    //     uploadToGemini("Electricity bill", files),
+    // ];
+    // const chatSession = model.startChat({generationConfig});
+    // const result = chatSession.sendMessage("");
+    // console.log(result.response.text()); 
 }
+
+function handleResponse(responseText) { 
+    console.log("Response from Python:", responseText);
+    
+}
+ // You can update the DOM or perform other actions with the response text here }
 // document.addEventListener("DOMContentLoaded", async function () {
 //     var dropbox = document.getElementById("dropbox");
 //     var fileElem = document.getElementById("fileElem");
