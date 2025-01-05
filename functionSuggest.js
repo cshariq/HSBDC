@@ -1,46 +1,76 @@
 const API_KEY = "AIzaSyAdJ1GLhQNBPz9Lp69TptrAJuHSQOuTleU";
 
-function upload(message, content, owner, repo, path, auth) {
-    return fetch(
-        `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
-        {
-        method: 'GET',
-        headers: {
-            Accept: 'application/vnd.github+json',
-            Authorization: `Bearer ${auth}`
-        }
-        }
-    )
-    .then(response => {
-        if (response.ok) {
-        return response.json();
-        } else {
-        return null;
-        }
-    })
-    .then(existingFile => {
-        const requestBody = {
-        message: message,
-        content: content // Already in Base64
-        };
-        if (existingFile) {
-        requestBody.sha = existingFile.sha;
-        }
+function deleteFileFromGitHub(path, sha, callback) {
+    const repo = 'cshariq/HSBDC';
+    const token = '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';
+    const message = `Delete ${path}`;
 
-        return fetch(
-        `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
-        {
-            method: 'PUT',
-            headers: {
-            Accept: 'application/vnd.github+json',
-            Authorization: `Bearer ${auth}`
-            },
-            body: JSON.stringify(requestBody),
+    const url = `https://api.github.com/repos/${repo}/contents/${path}`;
+    const data = {
+        message: message,
+        sha: sha,
+        committer: {
+            name: "Shraiq Charolia",
+            email: "shariq.charolia@gmail.com"
         }
-        );
+    };
+
+    fetch(url, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `token ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.commit) {
+            callback(); // Call the callback function after deletion
+        } else {
+            console.error('Failed to delete file:', data);
+        }
     })
     .catch(error => {
-        console.error('Error uploading file:', error);
+        console.error('Error:', error);
+    });
+}
+
+function uploadToGitHub(filename, content, path, callback) {
+    const repo = 'cshariq/HSBDC';
+    const message = 'Add ' + filename;
+    const token = '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';
+
+    const url = `https://api.github.com/repos/${repo}/contents/data/${path}`;
+    const data = {
+        message: message,
+        content: content,
+        committer: {
+            name: "Shariq Charolia",
+            email: "shariq.charolia@gmail.com"
+        }
+    };
+
+    fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `token ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.content) {
+            console.log('File uploaded successfully:', data.content.html_url);
+            callback(data.content.html_url);
+
+        } else {
+            console.error('Failed to upload file:', data);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
     });
 }
 
@@ -152,21 +182,25 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function handleFiles(files) {
-    const owner = 'cshariq';
-    const repo = 'HSBDC';
-    const auth = '{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}';
-    for (const file of files) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-        const content = event.target.result.split(',')[1]; // Get the file content
-        const path = file.name;
+    const file = files[0];
+    const reader = new FileReader();
+    console.log(file.mimeType)
+    reader.onload = function(event) {
+        const content = event.target.result.split(',')[1]; // Get the file content in base64
+        const path = file.name; // Set the path to the file's name
         const message = `Upload ${path}`;
-        
-        upload(message, content, owner, repo, path, auth);
-        };
-        reader.readAsDataURL(file); // Read the file as a data URL
-    }
-    selectedFile = files[0];
+        uploadToGitHub(message, content, path, function(fileUrl) {
+            const rawUrl = `https://raw.githubusercontent.com/cshariq/HSBDC/main/${fileUrl}`;
+            processData(rawUrl)
+            // deleteFileFromGitHub(path, fileSha, function() {
+            //     console.log('File deleted successfully');
+            // });
+        });
+    };
+    reader.readAsDataURL(file);
+}
+
+function processData(file) {
     const prompt = {
         "contents": [
           {
@@ -177,8 +211,8 @@ function handleFiles(files) {
               },
               {
                 "fileData": {
-                  "fileUri": URL.createObjectURL(selectedFile),
-                  "mimeType": selectedFile.type
+                  "fileUri": file,
+                  "mimeType": "image/png"
                 }
               }
             ]
@@ -209,57 +243,8 @@ function handleFiles(files) {
       })
       .then(response =>  console.log(response.json()))      
       .then(result => {
-        // const latestModelResponse = result.candidates[0].content.parts[0].text;
-        console.log(result.json());
+        const latestModelResponse = result.candidates[0].content.parts[0].text;
+        console.log(latestModelResponse);
       })
       .catch(error => console.error('Error:', error));
-          
 }
-
-
- // You can update the DOM or perform other actions with the response text here }
-// document.addEventListener("DOMContentLoaded", async function () {
-//     var dropbox = document.getElementById("dropbox");
-//     var fileElem = document.getElementById("fileElem");
-//     dropbox.addEventListener("dragenter", function (e) {
-//         dropArea.classList.add('dragover');
-//     });
-
-//     dropbox.addEventListener("dragover", function (e) {
-//         e.preventDefault();
-//         dropbox.classList.add("dragover");
-//         dropbox.highlight(); // Call highlight method
-//     });
-
-//     dropbox.addEventListener("dragleave", function (e) {
-//         e.preventDefault();
-//         dropbox.classList.remove("dragover");
-//     });
-
-//     dropbox.addEventListener("drop", function (e) {
-//         e.preventDefault();
-//         dropbox.classList.remove("dragover");
-//         var files = e.dataTransfer.files;
-//         handleFiles(files);
-//     });
-
-//     dropbox.addEventListener("click", function () {
-//         fileElem.click();
-//     });
-//     const files = [
-//         await uploadToGemini("Electricity bill", file),
-//     ];
-//     const chatSession = model.startChat({generationConfig});
-//     const result = await chatSession.sendMessage("");
-//     console.log(result.response.text());    
-// });
-
-
-// const API_KEY = "YOUR_API_KEY";
-
-// function uploadFile() {
-//     const fileInput = document.getElementById('fileInput');
-//     const file = fileInput.files[0];
-    
-// }
-

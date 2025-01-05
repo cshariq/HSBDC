@@ -92,34 +92,33 @@ function initMap() {
         map.fitBounds(bounds);
     });
 
-    // for (let i = 0; i <= 322; i++) {
-    //     let url = `data/data0/geojson_file${i}.geojson`;
-    //     fetch(url)
-    //         .then(response => {
-    //             if (!response.ok) {
-    //                 throw new Error(`GeoJSON file not found: ${url}`);
-    //             }
-    //             return response.json();
-    //         })
-    //         .then(geoJsonData => {
-    //             map.data.addGeoJson(geoJsonData);
+    for (let i = 0; i <= 322; i++) {
+        let url = `data/data0/geojson_file${i}.geojson`;
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`GeoJSON file not found: ${url}`);
+                }
+                return response.json();
+            })
+            .then(geoJsonData => {
+                map.data.addGeoJson(geoJsonData);
 
-    //             // Set the style for the GeoJSON data
-    //             map.data.setStyle(function(feature) {
-    //                 const weight = feature.getProperty('weight');
-    //                 const color = getColor(weight);
-    //                 return {
-    //                     fillColor: color,
-    //                     fillOpacity: 0.6,
-    //                     strokeColor: '#000000',
-    //                     strokeWeight: 1
-    //                 };
-    //             });
-    //         })
-    //         .catch(error => console.error('Error loading GeoJSON:', error));
-    // }
+                // Set the style for the GeoJSON data
+                map.data.setStyle(function(feature) {
+                    const weight = feature.getProperty('weight');
+                    const color = getColor(weight);
+                    return {
+                        fillColor: color,
+                        fillOpacity: 0.6,
+                        strokeColor: '#000000',
+                        strokeWeight: 1
+                    };
+                });
+            })
+            .catch(error => console.error('Error loading GeoJSON:', error));
+    }
 
-    // Zoom Control Event Listeners
     document.getElementById('zoom-in').addEventListener('click', function() {
         map.setZoom(map.getZoom() + 1);
     });
