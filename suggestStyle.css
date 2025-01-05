@@ -235,7 +235,7 @@ body {
     color: #BCBCBC;
 }
 
-#search-box {
+#search-box2 {
     left: 10px;
     width: 100%;
     border: none;
@@ -251,17 +251,17 @@ body {
     transition: all 0.1s ease-in-out;
 }
 
-#search-box::placeholder {
+#search-box2::placeholder {
     color: #D3D3D3;
     margin-left: 10px;
     font-family: "Comfortaa", sans-serif;
 }
 
-#search-box:hover {
+#search-box2:hover {
     background: rgba(0, 0, 0, 0.63);
 }
 
-#search-box:focus {
+#search-box2:focus {
     background: rgba(0, 0, 0, 0.63);
 }
 
