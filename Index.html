@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSBDC</title>
+    <link rel="stylesheet" href="themeSliderStyle.css">
+    <link rel="stylesheet" href="suggestStyle.css">
+    <link rel="stylesheet" id="style" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=add,arrow_forward_ios,groups,public,remove,school,trending_up,upload_file" />
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHthSOsLSsNGl_RBQz6xhLoppIBHrQdAI&libraries=places" async defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython.min.js"></script> -->
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython_stdlib.js"></script> -->
+    <!-- <script data-main="scripts/main" src="require.js"></script> -->
+    <!-- <script type="text/python" src="libs/google/google.py"></script> -->
+    <!-- <script type="text/python" src="libs/google/generativeai/__init__.py"></script> -->
+    <script type="text/python" src="process.py"></script>
+    <script src="maps.js"></script>
+    <script src="functionSuggest.js"></script>
+    <script src="function.js"></script>
+</head>
+
+<body>
+  <div class="wrap" id="schools">
+    <h1 class="ml16">Electricity has had a major impact on climate change</h1>
+    <h1 class="ml17">Over 84% of our energy comes from fossil fuels</h1>
+  </div>
+  <div class="container" id="schools">
+      <div class="dropbox" id="dropbox">
+          <input type="file" id="fileElem" onchange="handleFiles(this.files)">
+          <h1 class="large-prompt">Upload your electricity bill</h1>
+          <div class="small-prompt" id="idea">and we’ll guide you to reduce your carbon footprint</div>
+          <div class="small-prompt" id="idea">helping lessen the impacts of climate change on education</div>
+          <div class="material-symbols-outlined" id="upload-icon">upload_file</div>
+          <div class="small-prompt" id="explorer">search file or drag and drop</div>
+          <div class="small-prompt" id="requirements">Must be in CSV format</div>
+      </div>
+      <div class="first-column" id="boxes">
+          <div class="box"> 
+              <canvas id="electricity-consumption-chart"></canvas> 
+          </div> 
+          <div class="box"> 
+              <canvas id="water-consumption-chart"></canvas> 
+          </div> 
+          <div class="box"> 
+              <canvas id="total-cost-chart"></canvas>
+          </div> 
+          <div class="box" id="green-method"> 
+              <canvas id="average-monthly-consumption-chart"></canvas> 
+          </div>
+      </div>
+      <div class="second-column" id="boxes">
+          <div class="box second-column-box"> 
+              <canvas id="average-cost-per-unit-chart"></canvas> 
+          </div> 
+          <div class="box suggestions"> 
+              <canvas id="anomalies-detected-chart"></canvas>
+          </div> 
+      </div>            
+      <div class="location-container" id="location-finder" onload="initMap()">
+          <!-- <div id="map"></div> -->
+          <input id="search-box2" type="text" placeholder="Search for places">
+          <div class="current-location">
+              <div class="invalid-text">Your location is unknown</div>
+              <div class="location-text">Use your current location or enter your location</div>
+          </div>
+          <div class="location-stats">
+              <div class="stats-country">Country</div>
+              <div class="stats-text">Current literacy rate: N/A</div>
+              <div class="stats-text">Current GDP: N/A</div>
+              <div class="stats-text">Predicted CO<sub>2</sub> Emissions this Year: N/A</div>
+              <div class="stats-text" style="color: rgb(249, 199, 199);">Enter your location to predicte the impact of climate change on education in your area</div>
+          </div>
+      </div>
+  </div>
+  <div id="observations" onload="initMap()">
+    <div id="map"></div>
+    <input id="search-box" type="text" placeholder="Search for places">
+    <div class="view-options" onclick="changeSelectedOption()">
+      <option selected="selected">The Problem</option>
+      <option>The solution</option>
+    </div>
+    <div class="place-info" style="display: none;" id="info">
+      <div style="position: relative;">
+        <div class="place-population">
+          <span class="material-symbols-outlined">public</span>
+          <span id="country">Country: </span>
+        </div>
+        <div class="place-population">
+          <span class="material-symbols-outlined">groups</span>
+          <span id="population">Population: </span>
+        </div>
+        <div class="place-population">
+          <span class="material-symbols-outlined">trending_up</span>
+          <span id="popGrowth">Population Growth: </span>
+        </div>
+        <div class="place-population">
+          <span class="material-symbols-outlined">school</span>
+          <span id="enrollment">HS Enrollment Rate: </span>
+        </div>
+      </div>
+    </div>
+    <!-- <input type="range" min="1960" max="2023" value="1960" step="1" id="year-slider" oninput="updateYear(this.value)"> -->
+    <!-- <div for="year-slider" class="timeline"></div>
+      <div class="timeline-container">
+        <div class="timeline"></div>
+      </div>
+    </div> -->
+    <div class="graph-options">
+      <option selected="selected">Lit Rate</option>
+      <option>Econ Status</option>
+      <option>CO2 Emissions</option>
+      <option>Prediction</option>
+    </div>
+    <div class="zoom">
+      <button id="zoom-in" class="material-symbols-outlined">add</button>
+      <button id="zoom-out" class="material-symbols-outlined">remove</button>
+    </div>
+    <div class ='toggle-switch' onclick="myFunction()">
+      <label class="label-1" onclick="myFunction()">
+          <input id="dark-slider" class="input-1" type = 'checkbox' >
+          <div class = 'slider' onclick="myFunction()"></div>
+      </label>
+    </div>
+    <div class="timeline">
+      <span class="slider-text" id="slider-text-1960">1960</span>
+      <input type="range" min="1960" max="2050" value="50" class="timeline-slider" id="myRange">
+      <span class="slider-text">2050</span>
+    </div>
+  </div>
+</body>
+</html>
