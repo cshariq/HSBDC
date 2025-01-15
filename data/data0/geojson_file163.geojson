@@ -1,0 +1,40 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Liechtenstein",
+        "weight": 93.291288
+      },
+      "id": "LIE",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              9.55888,
+              47.04834
+            ],
+            [
+              9.63506,
+              47.12807
+            ],
+            [
+              9.53079,
+              47.27065
+            ],
+            [
+              9.47181,
+              47.06282
+            ],
+            [
+              9.55888,
+              47.04834
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

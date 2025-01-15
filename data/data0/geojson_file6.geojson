@@ -1,0 +1,40 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Andorra",
+        "weight": 81.40783845499999
+      },
+      "id": "AND",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1.51722,
+              42.42876
+            ],
+            [
+              1.71563,
+              42.49626
+            ],
+            [
+              1.78641,
+              42.57416
+            ],
+            [
+              1.47878,
+              42.65166
+            ],
+            [
+              1.51722,
+              42.42876
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

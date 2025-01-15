@@ -1,0 +1,40 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Monaco",
+        "weight": 99.4221946175
+      },
+      "id": "MCO",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.41851,
+              43.72474
+            ],
+            [
+              7.42213,
+              43.73654
+            ],
+            [
+              7.43869,
+              43.75129
+            ],
+            [
+              7.41236,
+              43.73432
+            ],
+            [
+              7.41851,
+              43.72474
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
