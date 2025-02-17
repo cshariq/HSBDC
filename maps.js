@@ -4,25 +4,25 @@ let data = {};
 
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
-        center: { lat: 0, lng: 0 },
-        zoom: 2,
-        minZoom: 2,
-        maxZoom: 10,
-        mapTypeControl: false,
-        streetViewControl: false,
-        fullscreenControl: false,
-        zoomControl: false,
-        gestureHandling: 'greedy',
-        restriction: {
-            latLngBounds: {
-                north: 85,
-                south: -60, // Exclude Antarctica
-                west: -180,
-                east: 180
-            },
-            strictBounds: true
+    center: { lat: 0, lng: 0 },
+    zoom: 2,
+    minZoom: 2,
+    maxZoom: 10,
+    mapTypeControl: true,  // Allows users to change the map type
+    streetViewControl: true,  // Enables Street View navigation
+    fullscreenControl: true,  // Allows full screen view
+    zoomControl: true,  // Provides zoom controls on the map
+    gestureHandling: 'greedy',  // Allows all gestures
+    restriction: {
+        latLngBounds: {
+            north: 85,
+            south: -60, // Exclude Antarctica
+            west: -180,
+            east: 180
         },
-    });
+        strictBounds: false  // Lets the user move beyond the bounds, but drags the map back when released
+    },
+});
 
     var input = document.getElementById('search-box');
     var searchBox = new google.maps.places.SearchBox(input);
