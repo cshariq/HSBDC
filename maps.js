@@ -8,7 +8,7 @@ function initMap() {
         zoom: 2,
         minZoom: 2,
         maxZoom: 10,
-        mapTypeControl: false,
+        mapTypeControl: true,
         streetViewControl: false,
         fullscreenControl: false,
         zoomControl: false,
