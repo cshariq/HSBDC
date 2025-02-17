@@ -29,58 +29,6 @@
 </head>
 
 <body>
-  <div class="wrap" id="schools">
-    <h1 class="ml16">Electricity has had a major impact on climate change</h1>
-    <h1 class="ml17">Over 84% of our energy comes from fossil fuels</h1>
-  </div>
-  <div class="container" id="schools">
-      <div class="dropbox" id="dropbox">
-          <input type="file" id="fileElem" onchange="handleFiles(this.files)">
-          <h1 class="large-prompt">Upload your electricity bill</h1>
-          <div class="small-prompt" id="idea">and we’ll guide you to reduce your carbon footprint</div>
-          <div class="small-prompt" id="idea">helping lessen the impacts of climate change on education</div>
-          <div class="material-symbols-outlined" id="upload-icon">upload_file</div>
-          <div class="small-prompt" id="explorer">search file or drag and drop</div>
-          <div class="small-prompt" id="requirements">Must be in CSV format</div>
-      </div>
-      <div class="first-column" id="boxes">
-          <div class="box"> 
-              <canvas id="electricity-consumption-chart"></canvas> 
-          </div> 
-          <div class="box"> 
-              <canvas id="water-consumption-chart"></canvas> 
-          </div> 
-          <div class="box"> 
-              <canvas id="total-cost-chart"></canvas>
-          </div> 
-          <div class="box" id="green-method"> 
-              <canvas id="average-monthly-consumption-chart"></canvas> 
-          </div>
-      </div>
-      <div class="second-column" id="boxes">
-          <div class="box second-column-box"> 
-              <canvas id="average-cost-per-unit-chart"></canvas> 
-          </div> 
-          <div class="box suggestions"> 
-              <canvas id="anomalies-detected-chart"></canvas>
-          </div> 
-      </div>            
-      <div class="location-container" id="location-finder" onload="initMap()">
-          <!-- <div id="map"></div> -->
-          <input id="search-box2" type="text" placeholder="Search for places">
-          <div class="current-location">
-              <div class="invalid-text">Your location is unknown</div>
-              <div class="location-text">Use your current location or enter your location</div>
-          </div>
-          <div class="location-stats">
-              <div class="stats-country">Country</div>
-              <div class="stats-text">Current literacy rate: N/A</div>
-              <div class="stats-text">Current GDP: N/A</div>
-              <div class="stats-text">Predicted CO<sub>2</sub> Emissions this Year: N/A</div>
-              <div class="stats-text" style="color: rgb(249, 199, 199);">Enter your location to predicte the impact of climate change on education in your area</div>
-          </div>
-      </div>
-  </div>
   <div id="observations" onload="initMap()">
     <div id="map"></div>
     <input id="search-box" type="text" placeholder="Search for places">
