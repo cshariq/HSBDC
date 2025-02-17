@@ -8,11 +8,11 @@ function initMap() {
         zoom: 2,
         minZoom: 2,
         maxZoom: 10,
-        mapTypeControl: true,
+        mapTypeControl: false,
         streetViewControl: false,
         fullscreenControl: false,
         zoomControl: false,
-        gestureHandling: 'cooperative',
+        gestureHandling: 'greedy',
         restriction: {
             latLngBounds: {
                 north: 85,
