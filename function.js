@@ -5,7 +5,6 @@ $(window).resize(function() {
 });
 
 function doneResizing() {
-    const sliderWidth = slider.offsetWidth;
     const textWidth = text.offsetWidth;
     const bars = document.querySelectorAll('.small-bar, .large-bar');
     bars.forEach(bar => bar.remove());
