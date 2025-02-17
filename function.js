@@ -52,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
             slider.parentElement.appendChild(bar);
         }
     }
-    brython()
     updateBars();
 });
 
